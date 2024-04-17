@@ -3,7 +3,20 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.write("Welcome to The Olympic's Analyzer!")
+st.title("Welcome to The Olympic's Analyzer!")
+
+# st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
+
+# options = ['Game Graph', 'Country Graph', 'Similarity Graph'] # options to choose from for graph(s)
+# selected_option = st.selectbox('Select an option:', options, index=None) # if nothing is selected, we don't want to waste resources on making a graph
+
+# if selected_option == 'Game Graph':
+#     pass
+# elif selected_option == 'Country Graph':
+#     pass
+# elif selected_option == 'Similarity Graph':
+#     pass 
+
 
 # Specify the number of rows to read as a sample
 sample_size = 1000  # Adjust the sample size as needed
@@ -21,7 +34,7 @@ for event, group in olympic_df.groupby('Event'):
             G.add_edge(participants[i], participants[j], event=event)
 
 # Plot the graph using NetworkX
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(40, 20))
 pos = nx.spring_layout(G)
 nx.draw(G, pos, with_labels=False, node_size=10, alpha=0.5, node_color='blue', edge_color='gray')
 plt.title('Olympic Participants Network')
