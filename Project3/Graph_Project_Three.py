@@ -1,44 +1,87 @@
-import networkx as nx 
+import networkx as nx
 import pandas as pd 
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.title("Welcome to The Olympic's Analyzer!")
+def test1():
+    # Specify the number of rows to read as a sample
+    sample_size = 1000  # Adjust the sample size as needed
 
-# st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
+    olympic_df = pd.read_csv("C:\\Users\\Eric Brown\\PycharmProjects\\Project3DSA\\Project3\\Data\\archive\\athlete_events.csv", nrows=sample_size)
 
-# options = ['Game Graph', 'Country Graph', 'Similarity Graph'] # options to choose from for graph(s)
-# selected_option = st.selectbox('Select an option:', options, index=None) # if nothing is selected, we don't want to waste resources on making a graph
+    G = nx.DiGraph()
 
-# if selected_option == 'Game Graph':
-#     pass
-# elif selected_option == 'Country Graph':
-#     pass
-# elif selected_option == 'Similarity Graph':
-#     pass 
+    G.add_nodes_from(olympic_df['ID'])
 
+    for event, group in olympic_df.groupby('Event'):
+        participants = group['ID'].tolist()
 
-# Specify the number of rows to read as a sample
-sample_size = 1000  # Adjust the sample size as needed
+        # print(event)
+        # print("group")
+        # print(group)
+        # print("participants")
+        # print(participants)
+        # print(len(participants))
+        # print("\n")
 
-olympic_df = pd.read_csv("Project3/Data/archive/athlete_events.csv", nrows=sample_size)
+        for i in range(len(participants)):
+            for j in range(i + 1, len(participants)):
+                G.add_edge(participants[i], participants[j], event=event)
 
-G = nx.DiGraph()
+    # Plot the graph using NetworkX
+    plt.figure(figsize=(40, 20))
+    pos = nx.spring_layout(G)
+    nx.draw(G, pos, with_labels=False, node_size=10, alpha=0.5, node_color='blue', edge_color='gray')
+    plt.title('Olympic Participants Network')
+    st.pyplot(plt)
 
-G.add_nodes_from(olympic_df['ID'])
+# st.title("Welcome to The Olympic's Analyzer!")
 
-for event, group in olympic_df.groupby('Event'):
-    participants = group['ID'].tolist()
-    for i in range(len(participants)):
-        for j in range(i + 1, len(participants)):
-            G.add_edge(participants[i], participants[j], event=event)
+st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
 
-# Plot the graph using NetworkX
-plt.figure(figsize=(40, 20))
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=False, node_size=10, alpha=0.5, node_color='blue', edge_color='gray')
-plt.title('Olympic Participants Network')
-st.pyplot(plt)
+options1 = ['Weight Graph', 'Height Graph', 'Age Graph'] # options to choose from for graph(s)
+options2 = ['Sport', 'Medal']
+selected_option1 = st.selectbox('Select an option:', options1, index=None) # if nothing is selected, we don't want to waste resources on making a graph
+selected_option2 = st.selectbox('Select an option:', options2, index=None)
+result = st.button("Search", type="secondary")
+cancel = st.button("Cancel", type="primary")
+
+if selected_option1 == 'Weight Graph':
+    if selected_option2 == 'Sport':
+        if result == True and cancel == False:
+            st.write('Making a Weight-Sport Graph... Please be patient...')
+            # create a graph that shows the connectedness of weight vs the sport, separate men/women?
+            test1()
+    if selected_option2 == 'Medal':
+        if result == True and cancel == False:
+            st.write('Making a Weight-Medal Graph... Please be patient...')
+            # create a graph that shows the connectedness of weight vs the medals, separate men/women?
+            pass
+
+elif selected_option1 == 'Height Graph':
+    if selected_option2 == 'Sport':
+        if result == True and cancel == False:
+            st.write('Making a Height-Sport Graph... Please be patient...')
+            # create a graph that shows the connectedness of height vs the sport, separate men/women?
+            pass
+    if selected_option2 == 'Medal':
+        if result == True and cancel == False:
+            st.write('Making a Height-Medal Graph... Please be patient...')
+            # create a graph that shows the connectedness of height vs the medal, separate men/women?
+            pass
+
+elif selected_option1 == 'Age Graph':
+    if selected_option2 == 'Sport':
+        if result == True and cancel == False:
+            st.write('Making an Age-Sport Graph... Please be patient...')
+            # create a graph that shows the connectedness of age vs the sport
+            pass
+    if selected_option2 == 'Medal':
+        if result == True and cancel == False:
+            st.write('Making an Age-Medal Graph... Please be patient...')
+            # create a graph that shows the connectedness of age vs the medal
+            pass
+
 
 
 
