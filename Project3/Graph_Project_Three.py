@@ -2,12 +2,17 @@ import networkx as nx
 import pandas as pd 
 import streamlit as st
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import matplotlib.backends.backend_agg as agg
+
+
 
 def test1():
     # Specify the number of rows to read as a sample
     sample_size = 1000  # Adjust the sample size as needed
 
-    olympic_df = pd.read_csv("C:\\Users\\Eric Brown\\PycharmProjects\\Project3DSA\\Project3\\Data\\archive\\athlete_events.csv", nrows=sample_size)
+    # olympic_df = pd.read_csv("C:\\Users\\Eric Brown\\PycharmProjects\\Project3DSA\\Project3\\Data\\archive\\athlete_events.csv", nrows=sample_size)
+    olympic_df = pd.read_csv("./Project3/Data/archive/cleaned_data.csv")
 
     G = nx.DiGraph()
 
@@ -35,6 +40,41 @@ def test1():
     plt.title('Olympic Participants Network')
     st.pyplot(plt)
 
+
+def breadth_first_search(graph, start_node):
+    visited = set() # this is just a bfs 
+    queue = [start_node]
+    visited_order = []
+    
+    while queue:
+        node = queue.pop(0)
+        if node not in visited:
+            visited.add(node)
+            visited_order.append(node)
+            queue.extend(graph.neighbors(node))
+    
+    return visited_order
+
+def visualize_bfs(graph, start_node):
+    visited_order = breadth_first_search(graph, start_node) # calls the bgfs 
+    pos = nx.spring_layout(graph)  # sets how the nodes look 
+    
+    for i in range(len(visited_order)):
+        st.write(f"Step {i+1}: Visiting node {visited_order[i]}") # step by step for now, if I find a way to animate many frames 
+        edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # red if visited, gray otherwise
+        nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues) # draw graph
+        st.pyplot(plt) # drawing the picture
+        st.write("---") # dividers
+
+def test_bfs(): 
+            G = nx.Graph()
+            G.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 4)])
+            visualize_bfs(G, 0)
+
+
+def depth_first_search(): 
+    pass
+
 # st.title("Welcome to The Olympic's Analyzer!")
 
 st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
@@ -51,7 +91,10 @@ if selected_option1 == 'Weight Graph':
         if result == True and cancel == False:
             st.write('Making a Weight-Sport Graph... Please be patient...')
             # create a graph that shows the connectedness of weight vs the sport, separate men/women?
-            test1()
+            test_bfs()
+
+
+
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
             st.write('Making a Weight-Medal Graph... Please be patient...')
