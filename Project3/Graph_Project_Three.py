@@ -6,6 +6,61 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.backends.backend_agg as agg
 import time
 
+def Weight_to_Sport_Graph():
+    olympic_df = pd.read_csv("Project3/Data/archive/athlete_events.csv")
+    sorted_df =  olympic_df.sort_values(by='Year', ascending=False) # sorting by most recent year
+    cleaned_df = sorted_df.drop_duplicates(subset='Name', keep='first') # cleaning up df by removing duplicate names 
+
+    # creating a function that creates a weight range 
+    def weight_range(weight, range_size=5, min_weight=0):
+        lower_bound = min_weight
+        upper_bound = min_weight + range_size
+        
+        while weight >= upper_bound:
+            lower_bound = upper_bound
+            upper_bound += range_size
+        
+        return f"{lower_bound}-{upper_bound}"
+    
+    # partitioning the data to make the graph 
+    Weight_df = cleaned_df
+    Weight_df['Weight_Range'] = cleaned_df['Weight'].apply(weight_range, range_size=5, min_weight=cleaned_df['Weight'].min())
+
+    columns_to_keep = ['Name', 'Sex', 'Weight', 'Weight_Range', 'Sport']
+    Weight_df = Weight_df[columns_to_keep]  
+    Weight_df = Weight_df.dropna()
+
+
+    Weight_df_male = Weight_df[Weight_df["Sex"] == "M"]
+    Weight_df_female = Weight_df[Weight_df["Sex"] == "F"]
+
+    # Filter out rows with NaN values in 'Weight_Range' and 'Sport' columns
+    Weight_df_male = Weight_df_male.dropna(subset=['Weight_Range', 'Sport'])
+
+    # Create an undirected graph
+    G = nx.Graph()
+
+    # Add nodes based on Weight_Range
+
+
+    weight_ranges = Weight_df_male['Weight_Range'].unique()
+    G.add_nodes_from(weight_ranges)
+
+
+    # Iterate over a set of unique sports
+    for sport in Weight_df_male['Sport'].unique():
+        # create a filtered DataFrame for rows with the current sport
+        sport_df = Weight_df_male[Weight_df_male['Sport'] == sport]
+        #   unique Weight_Ranges for the current sport
+        sport_weight_ranges = sport_df['Weight_Range'].unique()
+        # Add edges between nodes with the same sport (basically just add edges between all the weight ranges present)
+        for i in range(len(sport_weight_ranges)):
+            for j in range(i+1, len(sport_weight_ranges)):
+                G.add_edge(sport_weight_ranges[i], sport_weight_ranges[j])
+    
+    return G
+
+
 
 
 def test1():
@@ -73,19 +128,20 @@ def visualize_bfs(graph, start_node):
         edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # Red if visited, gray otherwise
         
         # Create the figure and axis objects
-        fig, ax = plt.subplots()
-        nx.draw(graph, pos, with_labels=True, node_color=node_colors, node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues, ax=ax)
+        fig, ax = plt.subplots(figsize=(12, 8))
+        nx.draw(graph, pos, with_labels=True, node_size=500, node_color=node_colors, font_size=10, font_weight='bold', edge_color=edge_colors, width=0.5)
         
         # Display the plot
         plot_placeholder.pyplot(fig)
-        time.sleep(3)
+        time.sleep(1)
         # Add a divider
         #st.write("---")
 
 def test_bfs(): 
-    G = nx.Graph()
-    G.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 4)])
-    visualize_bfs(G, 0)
+    # G = nx.Graph()
+    # G.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 4)])
+    G = Weight_to_Sport_Graph()
+    visualize_bfs(G, "25.0-30.0")
 
 
 def depth_first_search(graph, start_node): 
@@ -124,7 +180,7 @@ def visualize_dfs(graph, start_node):
         
         # Display the plot
         plot_placeholder.pyplot(fig)
-        time.sleep(3)
+        time.sleep(1)
         # Add a divider
         #st.write("---")
 
