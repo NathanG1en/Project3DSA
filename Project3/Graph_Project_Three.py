@@ -61,8 +61,6 @@ def Weight_to_Sport_Graph():
     return G
 
 
-
-
 def test1():
     # Specify the number of rows to read as a sample
     sample_size = 1000  # Adjust the sample size as needed
@@ -195,10 +193,17 @@ st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
 
 options1 = ['Weight Graph', 'Height Graph', 'Age Graph'] # options to choose from for graph(s)
 options2 = ['Sport', 'Medal']
+options3 = ['Male', 'Female']
 selected_option1 = st.selectbox('Select an option:', options1, index=None) # if nothing is selected, we don't want to waste resources on making a graph
 selected_option2 = st.selectbox('Select an option:', options2, index=None)
+selected_option3 = st.selectbox('Select an option:', options3, index=None)
 result = st.button("Search", type="secondary")
 cancel = st.button("Cancel", type="primary")
+
+if selected_option3 == 'Male':
+    selected_gender = 'M'
+elif selected_option3 == 'Female':
+    selected_gender = 'F'
 
 if selected_option1 == 'Weight Graph':
     if selected_option2 == 'Sport':
