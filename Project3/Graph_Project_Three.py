@@ -4,6 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import matplotlib.backends.backend_agg as agg
+import time
 
 
 
@@ -56,15 +57,30 @@ def breadth_first_search(graph, start_node):
     return visited_order
 
 def visualize_bfs(graph, start_node):
-    visited_order = breadth_first_search(graph, start_node) # calls the bgfs 
-    pos = nx.spring_layout(graph)  # sets how the nodes look 
+    visited_order = breadth_first_search(graph, start_node) # Calls the BFS algorithm
+    pos = nx.spring_layout(graph)  # Sets how the nodes look 
+    visted = []
     
+    step_paceholder = st.empty()
+    plot_placeholder = st.empty()  # Create a placeholder for the plot
+
     for i in range(len(visited_order)):
-        st.write(f"Step {i+1}: Visiting node {visited_order[i]}") # step by step for now, if I find a way to animate many frames 
-        edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # red if visited, gray otherwise
-        nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues) # draw graph
-        st.pyplot(plt) # drawing the picture
-        st.write("---") # dividers
+        current_node = visited_order[i]
+        visted.append(current_node)
+
+        step_paceholder.write(f"Step {i+1}: Visiting node {visited_order[i]}") # Step by step for now
+        node_colors = ['maroon' if node == current_node else 'darkblue' if node in visted  else 'skyblue' for node in graph.nodes()]
+        edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # Red if visited, gray otherwise
+        
+        # Create the figure and axis objects
+        fig, ax = plt.subplots()
+        nx.draw(graph, pos, with_labels=True, node_color=node_colors, node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues, ax=ax)
+        
+        # Display the plot
+        plot_placeholder.pyplot(fig)
+        time.sleep(3)
+        # Add a divider
+        #st.write("---")
 
 def test_bfs(): 
     G = nx.Graph()
@@ -87,15 +103,30 @@ def depth_first_search(graph, start_node):
     return visited_order
 
 def visualize_dfs(graph, start_node):
-    visited_order = depth_first_search(graph, start_node) # calls the bgfs 
-    pos = nx.spring_layout(graph)  # sets how the nodes look 
+    visited_order = depth_first_search(graph, start_node) # Calls the BFS algorithm
+    pos = nx.spring_layout(graph)  # Sets how the nodes look 
+    visted = []
     
+    step_paceholder = st.empty()
+    plot_placeholder = st.empty()  # Create a placeholder for the plot
+
     for i in range(len(visited_order)):
-        st.write(f"Step {i+1}: Visiting node {visited_order[i]}") # step by step for now, if I find a way to animate many frames 
-        edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # red if visited, gray otherwise
-        nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues) # draw graph
-        st.pyplot(plt) # drawing the picture
-        st.write("---") # dividers
+        current_node = visited_order[i]
+        visted.append(current_node)
+
+        step_paceholder.write(f"Step {i+1}: Visiting node {visited_order[i]}") # Step by step for now
+        node_colors = ['maroon' if node == current_node else 'darkblue' if node in visted  else 'skyblue' for node in graph.nodes()]
+        edge_colors = ['red' if edge in graph.edges(visited_order[i]) else 'gray' for edge in graph.edges()] # Red if visited, gray otherwise
+        
+        # Create the figure and axis objects
+        fig, ax = plt.subplots()
+        nx.draw(graph, pos, with_labels=True, node_color=node_colors, node_size=700, edge_color=edge_colors, width=2.0, edge_cmap=plt.cm.Blues, ax=ax)
+        
+        # Display the plot
+        plot_placeholder.pyplot(fig)
+        time.sleep(3)
+        # Add a divider
+        #st.write("---")
 
 def test_dfs(): 
     G = nx.Graph()
