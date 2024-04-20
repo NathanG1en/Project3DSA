@@ -41,8 +41,6 @@ def Weight_to_Sport_Graph():
     G = nx.Graph()
 
     # Add nodes based on Weight_Range
-
-
     weight_ranges = Weight_df_male['Weight_Range'].unique()
     G.add_nodes_from(weight_ranges)
 
@@ -61,11 +59,114 @@ def Weight_to_Sport_Graph():
     return G
 
 
+def Height_to_Sport_Graph():
+    olympic_df = pd.read_csv("Project3/Data/archive/athlete_events.csv")
+    sorted_df = olympic_df.sort_values(by='Year', ascending=False)  # sorting by most recent year
+    cleaned_df = sorted_df.drop_duplicates(subset='Name', keep='first')  # cleaning up df by removing duplicate names
+
+    # creating a function that creates a height range
+    def height_range(height, range_size=5, min_height=0):
+        lower_bound = min_height
+        upper_bound = min_height + range_size
+
+        while height >= upper_bound:
+            lower_bound = upper_bound
+            upper_bound += range_size
+
+        return f"{lower_bound}-{upper_bound}"
+
+    # partitioning the data to make the graph
+    Height_df = cleaned_df
+    Height_df['Height_Range'] = cleaned_df['Height'].apply(height_range, range_size=5,
+                                                           min_height=cleaned_df['height'].min())
+
+    columns_to_keep = ['Name', 'Sex', 'Height', 'Height_Range', 'Sport']
+    Height_df = Height_df[columns_to_keep]
+    Height_df = Height_df.dropna()
+
+    Height_df_male = Height_df[Height_df["Sex"] == "M"]
+    Height_df_female = Height_df[Height_df["Sex"] == "F"]
+
+    # Filter out rows with NaN values in 'Height_Range' and 'Sport' columns
+    Height_df_male = Height_df_male.dropna(subset=['Height_Range', 'Sport'])
+
+    # Create an undirected graph
+    G = nx.Graph()
+
+    # Add nodes based on Height_Range
+    height_ranges = Height_df_male['Height_Range'].unique()
+    G.add_nodes_from(height_ranges)
+
+    # Iterate over a set of unique sports
+    for sport in Height_df_male['Sport'].unique():
+        # create a filtered DataFrame for rows with the current sport
+        sport_df = Height_df_male[Height_df_male['Sport'] == sport]
+        #   unique Height_Ranges for the current sport
+        sport_height_ranges = sport_df['Height_Range'].unique()
+        # Add edges between nodes with the same sport (basically just add edges between all the height ranges present)
+        for i in range(len(sport_height_ranges)):
+            for j in range(i + 1, len(sport_height_ranges)):
+                G.add_edge(sport_height_ranges[i], sport_height_ranges[j])
+
+    return G
+
+def Age_to_Sport_Graph():
+    olympic_df = pd.read_csv("Project3/Data/archive/athlete_events.csv")
+    sorted_df = olympic_df.sort_values(by='Year', ascending=False)  # sorting by most recent year
+    cleaned_df = sorted_df.drop_duplicates(subset='Name', keep='first')  # cleaning up df by removing duplicate names
+
+    # creating a function that creates an age range
+    def age_range(age, range_size=5, min_age=0):
+        lower_bound = min_age
+        upper_bound = min_age + range_size
+
+        while age >= upper_bound:
+            lower_bound = upper_bound
+            upper_bound += range_size
+
+        return f"{lower_bound}-{upper_bound}"
+
+    # partitioning the data to make the graph
+    Age_df = cleaned_df
+    Age_df['Age_Range'] = cleaned_df['Age'].apply(age_range, range_size=5,
+                                                           min_age=cleaned_df['age'].min())
+
+    columns_to_keep = ['Name', 'Sex', 'Age', 'Age_Range', 'Sport']
+    Age_df = Age_df[columns_to_keep]
+    Age_df = Age_df.dropna()
+
+    Age_df_male = Age_df[Age_df["Sex"] == "M"]
+    Age_df_female = Age_df[Age_df["Sex"] == "F"]
+
+    # Filter out rows with NaN values in 'Age_Range' and 'Sport' columns
+    Age_df_male = Age_df_male.dropna(subset=['Age_Range', 'Sport'])
+
+    # Create an undirected graph
+    G = nx.Graph()
+
+    # Add nodes based on Age_Range
+    age_ranges = Age_df_male['Age_Range'].unique()
+    G.add_nodes_from(age_ranges)
+
+    # Iterate over a set of unique sports
+    for sport in Age_df_male['Sport'].unique():
+        # create a filtered DataFrame for rows with the current sport
+        sport_df = Age_df_male[Age_df_male['Sport'] == sport]
+        #   unique Age_Ranges for the current sport
+        sport_age_ranges = sport_df['Age_Range'].unique()
+        # Add edges between nodes with the same sport (basically just add edges between all the age ranges present)
+        for i in range(len(sport_age_ranges)):
+            for j in range(i + 1, len(sport_age_ranges)):
+                G.add_edge(sport_age_ranges[i], sport_age_ranges[j])
+
+    return G
+
+
 def test1():
     # Specify the number of rows to read as a sample
     sample_size = 1000  # Adjust the sample size as needed
 
-    # olympic_df = pd.read_csv("C:\\Users\\Eric Brown\\PycharmProjects\\Project3DSA\\Project3\\Data\\archive\\athlete_events.csv", nrows=sample_size)
+    # olympic_df = pd.read_csv("C:\\Users\\Eric Brown\\PycharmProjects\\Project3DSA\\Project3\\Data\\archive\\cleaned_data.csv.csv", nrows=sample_size)
     olympic_df = pd.read_csv("./Project3/Data/archive/cleaned_data.csv")
 
     G = nx.DiGraph()
@@ -135,11 +236,17 @@ def visualize_bfs(graph, start_node):
         # Add a divider
         #st.write("---")
 
-def test_bfs(): 
-    # G = nx.Graph()
-    # G.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 4)])
-    G = Weight_to_Sport_Graph()
-    visualize_bfs(G, "25.0-30.0")
+def test_bfs(type):
+    if type == 'weight' or type == 'Weight':
+        G = Weight_to_Sport_Graph()
+        start_node = "25.0-30.0"
+    if type == 'height' or type == 'Height':
+        G = Height_to_Sport_Graph()
+        start_node = "25.0-30.0" # change to whatever the starting value is
+    if type == 'age' or type == 'Age':
+        G = Age_to_Sport_Graph()
+        start_node = "25.0-30.0" # change to whatever the starting value is
+    visualize_bfs(G, start_node)
 
 
 def depth_first_search(graph, start_node): 
@@ -187,65 +294,138 @@ def test_dfs():
     G.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 4)])
     visualize_dfs(G, 0)
 
-# st.title("Welcome to The Olympic's Analyzer!")
 
 st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
 
 options1 = ['Weight Graph', 'Height Graph', 'Age Graph'] # options to choose from for graph(s)
 options2 = ['Sport', 'Medal']
 options3 = ['Male', 'Female']
-selected_option1 = st.selectbox('Select an option:', options1, index=None) # if nothing is selected, we don't want to waste resources on making a graph
-selected_option2 = st.selectbox('Select an option:', options2, index=None)
-selected_option3 = st.selectbox('Select an option:', options3, index=None)
-result = st.button("Search", type="secondary")
-cancel = st.button("Cancel", type="primary")
+selected_option1 = st.selectbox('Select a category to compare: ', options1, index=None) # if nothing is selected, we don't want to waste resources on making a graph
+selected_option2 = st.selectbox('Select what it will be compared to:', options2, index=None)
+selected_option3 = st.selectbox('Select a gender:', options3, index=None)
+bfs_dfs = st.radio(' ',['BFS', 'DFS'], captions=['Breadth First Search', 'Depth First Search'])
+result = st.button("Search", type="secondary", use_container_width=True)
+cancel = st.button("Cancel", type="primary", use_container_width=True)
 
-if selected_option3 == 'Male':
-    selected_gender = 'M'
-elif selected_option3 == 'Female':
-    selected_gender = 'F'
 
 if selected_option1 == 'Weight Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
-            st.write('Making a Weight-Sport Graph... Please be patient...')
-            # create a graph that shows the connectedness of weight vs the sport, separate men/women?
-            test_bfs()
-
-
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Weight-Sport Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of weight vs the sport with BFS for men
+                    test_bfs('weight')
+                else:
+                    # create a graph that shows the connectedness of weight vs the sport with BFS for women
+                    pass
+            else:
+                st.write('Here is the Weight-Sport Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of weight vs the sport with DFS for men
+                    test_dfs()
+                else:
+                    # create a graph that shows the connectedness of weight vs the sport with DFS for women
+                    pass
 
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making a Weight-Medal Graph... Please be patient...')
-            # create a graph that shows the connectedness of weight vs the medals, separate men/women?
-            test_dfs()
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Weight-Medal Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of weight vs medals with BFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of weight vs medals with BFS for women
+                    pass
+            else:
+                st.write('Here is the Weight-Medal Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of weight vs medals with DFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of weight vs medals with DFS for women
+                    pass
+
 
 elif selected_option1 == 'Height Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
             st.write('Making a Height-Sport Graph... Please be patient...')
-            # create a graph that shows the connectedness of height vs the sport, separate men/women?
-            pass
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Height-Sport Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Height vs the sport with BFS for men
+                    test_bfs('height')
+                else:
+                    # create a graph that shows the connectedness of Height vs the sport with BFS for women
+                    pass
+            else:
+                st.write('Here is the Height-Sport Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Height vs the sport with DFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Height vs the sport with DFS for women
+                    pass
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making a Height-Medal Graph... Please be patient...')
-            # create a graph that shows the connectedness of height vs the medal, separate men/women?
-            pass
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Height-Medal Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Height vs medals with BFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Height vs medals with BFS for women
+                    pass
+            else:
+                st.write('Here is the Height-Medal Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Height vs medals with DFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Height vs medals with DFS for women
+                    pass
+
 
 elif selected_option1 == 'Age Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
-            st.write('Making an Age-Sport Graph... Please be patient...')
-            # create a graph that shows the connectedness of age vs the sport
-            pass
+            st.write('Making a Age-Sport Graph... Please be patient...')
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Age-Sport Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Age vs the sport with BFS for men
+                    test_bfs('age')
+                else:
+                    # create a graph that shows the connectedness of Age vs the sport with BFS for women
+                    pass
+            else:
+                st.write('Here is the Age-Sport Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Age vs the sport with DFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Age vs the sport with DFS for women
+                    pass
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making an Age-Medal Graph... Please be patient...')
-            # create a graph that shows the connectedness of age vs the medal
-            pass
-
-
-
+            if bfs_dfs == 'BFS':
+                st.write('Here is the Age-Medal Graph being viewed with a BFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Age vs medals with BFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Age vs medals with BFS for women
+                    pass
+            else:
+                st.write('Here is the Age-Medal Graph being viewed with a DFS')
+                if selected_option3 == 'Male':
+                    # create a graph that shows the connectedness of Age vs medals with DFS for men
+                    pass
+                else:
+                    # create a graph that shows the connectedness of Age vs medals with DFS for women
+                    pass
 
 # G = nx.Graph() # Create an empty undirected graph (or nx.DiGraph() for a directed graph)
 # # Add nodes from the 'source' and 'target' columns
