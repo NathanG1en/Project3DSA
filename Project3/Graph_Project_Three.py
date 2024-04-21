@@ -447,12 +447,13 @@ st.title("Welcome to The Olympics Analyzer!") # Title for the webapp
 options1 = ['Weight Graph', 'Height Graph', 'Age Graph'] # options to choose from for graph(s)
 options2 = ['Sport', 'Medal']
 options3 = ['Male', 'Female']
-selected_option1 = st.selectbox('Select a category to compare: ', options1, index=None) # if nothing is selected, we don't want to waste resources on making a graph
+selected_option1 = st.selectbox('Select a category to compare: ', options1, index=None)
 selected_option2 = st.selectbox('Select what it will be compared to:', options2, index=None)
 selected_option3 = st.selectbox('Select a gender:', options3, index=None)
 bfs_dfs = st.radio(' ',['BFS', 'DFS'], captions=['Breadth First Search', 'Depth First Search'])
-result = st.button("Search", type="secondary", use_container_width=True)
-cancel = st.button("Cancel", type="primary", use_container_width=True)
+result = st.button("Search", type="primary", use_container_width=True)
+cancel = st.button("Cancel", type="secondary", use_container_width=True)
+
 
 if selected_option3 == 'Male':
     selected_gender = 'M'
@@ -462,77 +463,102 @@ elif selected_option3 == "Female":
 if selected_option1 == 'Weight Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
-            st.write('Making a Weight-Sport Graph... Please be patient...')
             # create a graph that shows the connectedness of weight vs the sport, separate men/women?
+            start = time.time()
             G = Weight_to_Sport_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Weight-Sport Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'DFS':
                 st.write('Here is the Weight-Sport Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
 
 
 
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making a Weight-Medal Graph... Please be patient...')
             # create a graph that shows the connectedness of weight vs the medals, separate men/women?
+            start = time.time()
+            start = time.time()
             G = Weight_to_Medal_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Weight-Medal Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'BFS':
                 st.write('Here is the Weight-Medal Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
 
 elif selected_option1 == 'Height Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
-            st.write('Making a Height-Sport Graph... Please be patient...')
             # create a graph that shows the connectedness of height vs the sport, separate men/women?
+            start = time.time()
             G = Height_to_Sport_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Height-Sport Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'BFS':
                 st.write('Here is the Height-Sport Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making a Height-Medal Graph... Please be patient...')
             # create a graph that shows the connectedness of height vs the medal, separate men/women?
+            start = time.time()
             G = Height_to_Medal_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Height-Medal Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'DFS':
                 st.write('Here is the Height-Medal Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
 
 elif selected_option1 == 'Age Graph':
     if selected_option2 == 'Sport':
         if result == True and cancel == False:
-            st.write('Making an Age-Sport Graph... Please be patient...')
             # create a graph that shows the connectedness of age vs the sport
+            start = time.time()
             G = Age_to_Sport_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Age-Sport Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'DFS':
                 st.write('Here is the Age-Sport Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
     if selected_option2 == 'Medal':
         if result == True and cancel == False:
-            st.write('Making an Age-Medal Graph... Please be patient...')
             # create a graph that shows the connectedness of age vs the medal
+            start = time.time()
             G = Age_to_Medal_Graph(selected_gender)
             if bfs_dfs == 'BFS':
                 st.write('Here is the Age-Medal Graph being viewed with a BFS')
                 visualize_bfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
             elif bfs_dfs == 'DFS':
                 st.write('Here is the Age-Medal Graph being viewed with a DFS')
                 visualize_dfs(G)
+                end = time.time()
+                st.write('Time Taken: ' + str(end - start) + ' seconds')
 
 
 
