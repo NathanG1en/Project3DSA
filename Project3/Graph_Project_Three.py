@@ -563,14 +563,3 @@ elif selected_option1 == 'Age Graph':
 
 
 
-# G = nx.Graph() # Create an empty undirected graph (or nx.DiGraph() for a directed graph)
-# # Add nodes from the 'source' and 'target' columns
-# G.add_nodes_from(olympic_dfdf['source'])
-# G.add_nodes_from(olympic_dfdf['target'])
-# # Add edges from the DataFrame
-# edges = [(row['source'], row['target']) for index, row in df.iterrows()]
-# G.add_edges_from(edges)
-
-
-
-
