@@ -28,5 +28,5 @@ Combine the graphs you make with the specifics provided in the Information Looku
 ### Demo Video
 
 <video width="320" height="240" controls>
-  <source src="Demo_Video.mp4" type="video/mp4">
+  <source src="https://youtu.be/JPhppmrTh2Q" type="video/mp4">
 </video>
