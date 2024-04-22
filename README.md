@@ -7,7 +7,7 @@ Download the following packages: pandas, networkx, matplotlib or use `requiremen
 ### Steps For Running:
 
 1. Run `Intro_Page.py`.
-2. Copy and paste the given command: streamlit run /Users/nathanglen/Project3DSA/Project3/Intro_Page.py
+2. Copy and paste the given command (example: streamlit run /Users/nathanglen/Project3DSA/Project3/Intro_Page.py)
 
 into the command line and press enter (This should open up a web page).
 
