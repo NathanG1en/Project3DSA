@@ -24,3 +24,9 @@ into the command line and press enter (This should open up a web page).
 - Choose the search that you want to use to explore the graph.
 
 Combine the graphs you make with the specifics provided in the Information Lookup to get a better understanding of the world of Olympians!
+
+### Demo Video
+
+<video width="320" height="240" controls>
+  <source src="video1832205016.mp4" type="video/mp4">
+</video>
